@@ -14,9 +14,7 @@ async function postRegisterController(req, res) {
   });
 
   if (isUsesrExists) {
-    return res.status(401).json({
-      message: "User already exists",
-    });
+    return res.redirect("/auth/register?error=User already exists");
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);

@@ -1,5 +1,5 @@
 let chats = JSON.parse(localStorage.getItem("chats")) || [];
-let activeChat = chats.length ? chats[chats.length - 1].id : null;
+let activeChat = null; // Always start fresh
 
 const chatList = document.getElementById("chatList");
 const chatMessages = document.getElementById("chatMessages");
@@ -10,6 +10,13 @@ const chatInput = document.getElementById("chatInput");
 const sidebar = document.getElementById("sidebar");
 const hamburger = document.getElementById("hamburger");
 const closeSidebar = document.getElementById("closeSidebar");
+
+// Create a new chat when app loads
+if (chats.length === 0) {
+  startNewChat();
+} else {
+  startNewChat(); // Even if old chats exist, we still start fresh
+}
 
 renderChatList();
 renderMessages();
@@ -29,7 +36,7 @@ chatInput.addEventListener("keypress", (e) => {
 
 function startNewChat() {
   const chatId = Date.now();
-  chats.push({ id: chatId, messages: [] });
+  chats.unshift({ id: chatId, messages: [] });
   activeChat = chatId;
   saveChats();
   renderChatList();
@@ -75,14 +82,34 @@ function renderChatList() {
   chatList.innerHTML = "";
   chats.forEach((chat) => {
     const li = document.createElement("li");
-    li.textContent = chat.messages[0]?.text || "New Conversation";
-    li.classList.toggle("active", chat.id === activeChat);
-    li.onclick = () => {
+
+    // Chat title
+    const titleSpan = document.createElement("span");
+    titleSpan.textContent = chat.messages[0]?.text || "New Conversation";
+    titleSpan.style.flex = "1";
+    titleSpan.onclick = () => {
       activeChat = chat.id;
       renderChatList();
       renderMessages();
       sidebar.classList.remove("show"); // close on mobile
     };
+
+    // Delete button
+    const deleteBtn = document.createElement("button");
+    deleteBtn.innerHTML = "✖";
+    deleteBtn.className = "delete-chat-btn";
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation(); // prevent triggering chat open
+      deleteChat(chat.id);
+    };
+
+    li.classList.toggle("active", chat.id === activeChat);
+    li.style.display = "flex";
+    li.style.alignItems = "center";
+    li.style.justifyContent = "space-between";
+
+    li.appendChild(titleSpan);
+    li.appendChild(deleteBtn);
     chatList.appendChild(li);
   });
 }
@@ -107,6 +134,24 @@ function renderMessages() {
   });
 
   chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function deleteChat(chatId) {
+  chats = chats.filter((c) => c.id !== chatId);
+
+  // If deleting the active chat, set activeChat to null or create a new one
+  if (activeChat === chatId) {
+    activeChat = null;
+    if (chats.length > 0) {
+      activeChat = chats[0].id;
+    } else {
+      startNewChat();
+    }
+  }
+
+  saveChats();
+  renderChatList();
+  renderMessages();
 }
 
 function saveChats() {
