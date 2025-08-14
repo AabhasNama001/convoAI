@@ -51,13 +51,24 @@ function sendMessage() {
   renderMessages();
   chatInput.value = "";
 
-  setTimeout(() => {
-    chat.messages.push({ sender: "bot", text: "This is a bot reply 😄" });
-    saveChats();
-    renderMessages();
-  }, 500);
+  // Send message to server via socket
+  if (typeof socket !== "undefined") {
+    socket.emit("ai-message", text);
+  }
 
   saveChats();
+}
+
+// 🆕 Setup socket listener ONCE, outside sendMessage
+if (typeof socket !== "undefined") {
+  socket.on("ai-message-response", (message) => {
+    const chat = chats.find((c) => c.id === activeChat);
+    if (chat) {
+      chat.messages.push({ sender: "bot", text: message });
+      saveChats();
+      renderMessages();
+    }
+  });
 }
 
 function renderChatList() {
