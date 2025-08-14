@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ConvoAI</title>
+    <link rel="stylesheet" href="/styles/style.css" />
+</head>
+
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Chats</h2>
+                <button id="closeSidebar" class="close-btn">✖</button>
+            </div>
+            <button id="newChatBtn" class="new-chat-btn">+ New Chat</button>
+            <ul id="chatList" class="chat-list"></ul>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <button id="hamburger" class="hamburger">☰</button>
+                <h2>ConvoAI</h2>
+            </header>
+            <div id="chatMessages" class="messages">
+                <div id="placeholder" class="placeholder">What are we working on ?</div>
+            </div>
+            <div class="input-bar">
+                <input type="text" id="chatInput" placeholder="Type your message..." />
+                <button id="sendBtn">Send</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+        integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
+        crossorigin="anonymous"></script>
+    <script>
+        const socket = io();
+    </script>
+    <script src="/scripts/script.js"></script>
+</body>
+
+</html>

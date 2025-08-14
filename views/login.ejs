@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConvoAI</title>
+    <link rel="stylesheet" href="/styles/theme.css">
+    <link rel="stylesheet" href="/styles/auth-form.css">
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>Login</h2>
+        <form action="/auth/login" method="POST" novalidate>
+            <div class="input-group">
+                <input type="email" name="email" placeholder="Email" required />
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" placeholder="Password" required />
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p class="switch-auth">
+            Not registered yet? <a href="/auth/register">Register</a>
+        </p>
+    </div>
+</body>
+
+</html>

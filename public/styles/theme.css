@@ -1,0 +1,21 @@
+:root {
+  /* Colors */
+  --primary-color: #4f46e5; /* Indigo 600 */
+  --primary-hover: #4338ca;
+  --background-color: #eeeeee; /* Light Gray */
+  --card-background: #ffffff;
+  --text-color: #111827;
+  --placeholder-color: #9ca3af;
+  --border-color: #e5e7eb;
+
+  /* Sizing */
+  --border-radius: 8px;
+  --spacing: 1rem;
+
+  /* Typography */
+  --font-family: 'Inter', sans-serif;
+  --font-size: 16px;
+
+  /* Shadow */
+  --box-shadow: 0 14px 18px rgba(0, 0, 0, 0.05);
+}
