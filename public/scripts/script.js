@@ -1,5 +1,7 @@
 let chats = JSON.parse(localStorage.getItem("chats")) || [];
-let activeChat = null; // Always start fresh
+let activeChat = localStorage.getItem("activeChat")
+  ? Number(localStorage.getItem("activeChat"))
+  : null;
 
 const chatList = document.getElementById("chatList");
 const chatMessages = document.getElementById("chatMessages");
@@ -11,11 +13,12 @@ const sidebar = document.getElementById("sidebar");
 const hamburger = document.getElementById("hamburger");
 const closeSidebar = document.getElementById("closeSidebar");
 
-// Create a new chat when app loads
+// ✅ Create a new chat only if there are no chats
 if (chats.length === 0) {
   startNewChat();
-} else {
-  startNewChat(); // Even if old chats exist, we still start fresh
+} else if (!activeChat) {
+  // If there are chats but no active chat saved, pick the first one
+  activeChat = chats[0].id;
 }
 
 renderChatList();
@@ -39,6 +42,7 @@ function startNewChat() {
   chats.unshift({ id: chatId, messages: [] });
   activeChat = chatId;
   saveChats();
+  saveActiveChat();
   renderChatList();
   renderMessages();
 }
@@ -89,6 +93,7 @@ function renderChatList() {
     titleSpan.style.flex = "1";
     titleSpan.onclick = () => {
       activeChat = chat.id;
+      saveActiveChat();
       renderChatList();
       renderMessages();
       sidebar.classList.remove("show"); // close on mobile
@@ -139,23 +144,27 @@ function renderMessages() {
 function deleteChat(chatId) {
   chats = chats.filter((c) => c.id !== chatId);
 
-  // If deleting the active chat, set activeChat to null or create a new one
+  // If deleting the active chat, update activeChat
   if (activeChat === chatId) {
-    activeChat = null;
-    if (chats.length > 0) {
-      activeChat = chats[0].id;
-    } else {
-      startNewChat();
-    }
+    activeChat = chats.length > 0 ? chats[0].id : null;
+    saveActiveChat();
   }
 
-  saveChats();
-  renderChatList();
-  renderMessages();
+  if (chats.length === 0) {
+    startNewChat();
+  } else {
+    saveChats();
+    renderChatList();
+    renderMessages();
+  }
 }
 
 function saveChats() {
   localStorage.setItem("chats", JSON.stringify(chats));
+}
+
+function saveActiveChat() {
+  localStorage.setItem("activeChat", activeChat);
 }
 
 // 🆕 Auto-hide mobile sidebar when switching to desktop
