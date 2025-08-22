@@ -5,9 +5,16 @@ const setupSocketServer = require("./src/socket/socket.server");
 
 const httpServer = http.createServer(app);
 
+// Setup Socket.IO
 setupSocketServer(httpServer);
+
+// Connect to DB
 connectToDB();
 
-httpServer.listen(3000, () => {
-  console.log("Server is running on port 3000");
+// Use Render's dynamic port
+const PORT = process.env.PORT || 3000;
+const HOST = "0.0.0.0";
+
+httpServer.listen(PORT, HOST, () => {
+  console.log(`Server is running on http://${HOST}:${PORT}`);
 });
