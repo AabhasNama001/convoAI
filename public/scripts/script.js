@@ -89,7 +89,8 @@ function renderChatList() {
 
     // Chat title
     const titleSpan = document.createElement("span");
-    titleSpan.textContent = chat.messages[0]?.text || "New Conversation";
+    let text = chat.messages[0]?.text || "New Conversation";
+    titleSpan.textContent = text.length > 25 ? text.slice(0, 25) + "..." : text;
     titleSpan.style.flex = "1";
     titleSpan.onclick = () => {
       activeChat = chat.id;
@@ -171,5 +172,37 @@ function saveActiveChat() {
 window.addEventListener("resize", () => {
   if (window.innerWidth >= 769) {
     sidebar.classList.remove("show");
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const userProfile = document.querySelector(".user-profile");
+
+  // Example: track login status (using cookie or localStorage)
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+  if (isLoggedIn) {
+    userProfile.innerHTML = `<button id="logoutBtn">Logout</button>`;
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      try {
+        const res = await fetch("/auth/logout", {
+          method: "GET",
+          credentials: "include", // make sure cookie is sent
+        });
+
+        if (res.redirected) {
+          localStorage.removeItem("isLoggedIn");
+          window.location.href = res.url; // should be /auth/login
+        }
+      } catch (error) {
+        console.error("Logout failed:", error);
+      }
+    });
+  } else {
+    userProfile.innerHTML = `
+      <a href="/auth/logout"><button>Logout</button></a>
+      <a href="/auth/register"><button class="register">Register</button></a>
+    `;
   }
 });
